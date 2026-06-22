@@ -1,0 +1,89 @@
+{
+  "display_information": {
+    "name": "MemoryLane",
+    "description": "Your team's institutional memory — automatically built, always accessible, never lost.",
+    "background_color": "#1a1a2e",
+    "long_description": "MemoryLane silently watches your Slack workspace, captures knowledge moments, stores them in a structured Notion knowledge graph, and surfaces them instantly when someone needs that information again."
+  },
+  "features": {
+    "app_home": {
+      "home_tab_enabled": true,
+      "messages_tab_enabled": true,
+      "messages_tab_read_only_enabled": false
+    },
+    "bot_user": {
+      "display_name": "MemoryLane",
+      "always_online": true
+    },
+    "slash_commands": [
+      {
+        "command": "/remember",
+        "description": "Manually save a knowledge card to MemoryLane",
+        "usage_hint": "[knowledge to save]",
+        "should_escape": false
+      },
+      {
+        "command": "/recall",
+        "description": "Search MemoryLane's knowledge base",
+        "usage_hint": "[what you're looking for]",
+        "should_escape": false
+      },
+      {
+        "command": "/handoff",
+        "description": "Generate a knowledge handoff document for a team member",
+        "usage_hint": "@username",
+        "should_escape": false
+      },
+      {
+        "command": "/dailybrief",
+        "description": "Generate your daily brief summary of recent knowledge captured",
+        "usage_hint": "",
+        "should_escape": false
+      }
+    ]
+  },
+  "oauth_config": {
+    "scopes": {
+      "bot": [
+        "app_mentions:read",
+        "assistant:write",
+        "channels:history",
+        "channels:join",
+        "channels:read",
+        "chat:write",
+        "chat:write.public",
+        "commands",
+        "groups:history",
+        "groups:read",
+        "im:history",
+        "im:read",
+        "im:write",
+        "mpim:history",
+        "reactions:read",
+        "reactions:write",
+        "team:read",
+        "users:read",
+        "users:read.email"
+      ]
+    }
+  },
+  "settings": {
+    "event_subscriptions": {
+      "bot_events": [
+        "app_mention",
+        "assistant_thread_context_changed",
+        "assistant_thread_started",
+        "message.channels",
+        "message.groups",
+        "message.im",
+        "reaction_added"
+      ]
+    },
+    "interactivity": {
+      "is_enabled": true
+    },
+    "org_deploy_enabled": false,
+    "socket_mode_enabled": true,
+    "token_rotation_enabled": false
+  }
+}
