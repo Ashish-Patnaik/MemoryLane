@@ -1,2 +1,30 @@
-# MemoryLane
-Your team's institutional memory — automatically built, always accessible, never lost in slack
+┌────────────────────────────────────────────────────────────────────────┐
+│                        SLACK CLIENT (UX SURFACE)                       │
+│                                                                        │
+│   🧠 Emoji Reaction (Events API)     Slash Commands (/recall, /handoff)│
+└───────────────────┬──────────────────────────────┬─────────────────────┘
+                    │                              │
+                    ▼ Socket Mode / Websocket      ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                        MEMORYLANE ENGINE (NODE.JS)                     │
+│                                                                        │
+│   ┌────────────────────────┐            ┌──────────────────────────┐   │
+│   │   Event Controllers    ├───────────►│    Fuzzy Memory Cache    │   │
+│   │   (Bolt JS Router)     │            │    (Local Fuse.js)       │   │
+│   └───────────┬────────────┘            └────────────▲─────────────┘   │
+│               │                                      │                 │
+│               │ AI Summarization                     │ Read Context    │
+│               ▼                                      │                 │
+│   ┌────────────────────────┐                         │                 │
+│   │     AI Model           ├─────────────────────────┘                 │
+│   │                        |                                           |
+│   └───────────┬────────────┘                                           │
+│               │                                                        │
+└───────────────┼────────────────────────────────────────────────────────┘
+                │ Model Context Protocol (MCP)
+                ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                      ENTERPRISE SYSTEM OF RECORD                       │
+│                                                                        │
+│                      Notion Workspace (Database)                       │
+└────────────────────────────────────────────────────────────────────────┘
