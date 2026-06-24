@@ -405,8 +405,23 @@ app.command('/remember', async ({ command, ack, respond, client }) => {
 // ─────────────────────────────────────────────────────────────────────────────
 // START THE APP
 // ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// START THE APP & KEEP-ALIVE SERVER
+// ─────────────────────────────────────────────────────────────────────────────
 (async () => {
   await cache.initializeCache(); 
   await app.start();
   console.log('⚡️ MemoryLane Agent is running in Socket Mode!');
+
+  // 🌟 NEW: Tiny native HTTP server to satisfy Render's port scanning!
+  const http = require('http');
+  const server = http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('MemoryLane is Awake and Running 24/7!\n');
+  });
+  
+  const port = process.env.PORT || 3000;
+  server.listen(port, () => {
+    console.log(`📡 Keep-alive HTTP server listening on port ${port}`);
+  });
 })();
