@@ -106,8 +106,8 @@ PORT=3000
 
 ### 1. Project Setup
 ```bash
-git clone https://github.com/username/memorylane-slack-agent.git
-cd memorylane-slack-agent
+git clone https://github.com/Ashish-Patnaik/MemoryLane.git
+cd MemoryLane
 npm install
 ```
 
