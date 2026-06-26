@@ -30,7 +30,7 @@ Chat streams are temporary, noisy, and difficult to search. MemoryLane bridges t
 
 *   **Silent Context Capture (🧠 Reaction Emoji):** Hover over any thread reply and react with the brain emoji. MemoryLane automatically traces the reply back to the parent question, extracts a clean, structured Q&A card using AI, and writes it to your Notion workspace.
 *   **Self-Cleaning Undo System:** If a user accidentally reacts to an outdated message or a joke, simply removing the `🧠` emoji triggers a deletion event that automatically archives the record in Notion and purges it from local memory.
-*   **Fuzzy Search & Recall (`/recall`):** Query your global workspace memory using natural language. Backed by an in-memory fuzzy search engine, the bot tolerates typos and retrieves answers in milliseconds, citing the original expert and channel.
+*   **Fuzzy Search & Recall (`/recall`):** Query your global workspace memory using natural, conversational language. MemoryLane searches both our fast local cache and Slack's native **Real-Time Search (RTS) API** to instantly retrieve answers, tolerating typos and citing the expert and original channel.
 *   **Offboarding Shield (`/handoff`):** Instantly compile every single verified contribution a departing team member has ever made into a clean, structured markdown document, with a single-click export back to Notion.
 *   **The Daily Brief (`/dailybrief`):** Generates an AI-synthesized summary card of every verified decision made across your workspace in the last 24 hours to help teammates catch up without scrolling.
 *   **Manual Override (`/remember`):** Allows users to manually save standalone facts directly to the memory base without needing an active thread.
@@ -43,38 +43,41 @@ MemoryLane is engineered for sub-millisecond retrieval speeds. Instead of making
 
 ```text
 ┌────────────────────────────────────────────────────────────────────────┐
-│                        SLACK CLIENT (UX SURFACE)                      │
+│                        SLACK CLIENT (UX SURFACE)                       │
 │                                                                        │
-│   🧠 Emoji Reaction (Events API)     Slash Commands (/recall, /handoff)│
+│   🧠 Emoji Reaction (Events)   Commands (/recall,/handoff,/remember...)│
 └───────────────────┬──────────────────────────────┬─────────────────────┘
                     │                              │
                     ▼ Socket Mode / Websocket      ▼
 ┌────────────────────────────────────────────────────────────────────────┐
-│                        MEMORYLANE ENGINE (NODE.JS)                    │
+│                        MEMORYLANE ENGINE (NODE.JS)                     │
 │                                                                        │
 │   ┌────────────────────────┐            ┌──────────────────────────┐   │
 │   │   Event Controllers    ├───────────►│    Fuzzy Memory Cache    │   │
 │   │   (Bolt JS Router)     │            │    (Local Fuse.js)       │   │
 │   └───────────┬────────────┘            └────────────▲─────────────┘   │
 │               │                                      │                 │
-│               │ AI Summarization                     │ Read Context    │
+│               ├─[Query RTS]──► [Slack RTS API]       │ Read Context    │
+│               │                (Workspace Search)    │                 │
+│               │ AI Summarization                     │                 │
 │               ▼                                      │                 │
 │   ┌────────────────────────┐                         │                 │
-│   │     AI Model           │-------------------------                  |                         
+│   │     OpenRouter AI      ├─────────────────────────┘                 │
+│   │   (Gemini 2.5 Flash)   │                                           │
 │   └───────────┬────────────┘                                           │
 │               │                                                        │
 └───────────────┼────────────────────────────────────────────────────────┘
-                │ Model Context Protocol (MCP)
-                ▼
+                    │ Model Context Protocol (MCP)
+                    ▼
 ┌────────────────────────────────────────────────────────────────────────┐
-│                      ENTERPRISE SYSTEM OF RECORD                      │
+│                      ENTERPRISE SYSTEM OF RECORD                       │
 │                                                                        │
 │                      Notion Workspace (Database)                       │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
 1.  **On Startup:** The Node.js engine queries Notion and downloads all historical cards, warming up an in-memory `Fuse.js` database.
-2.  **During Retrieval:** `/recall` queries are resolved locally in memory instantly.
+2.  **During Retrieval:** `/recall` queries are resolved locally in memory instantly via `Fuse.js`, supplemented by Slack's native **Real-Time Search (RTS) API** to query unstructured workspace-wide history for wider context.
 3.  **During Ingestion:** New captures are written to Notion (the permanent System of Record) and simultaneously pushed to the local cache, keeping the memory in sync without rebooting.
 
 ---
